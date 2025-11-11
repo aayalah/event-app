@@ -9,17 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const LoginSchema = z.object({
+    full_name: z.string(),
     email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"),
     password: z.string().min(6),
 })
 
-const LoginForm = () => {
+const SignUpForm = () => {
 
     const form = useForm({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "",
             password: "",
+            full_name: "",
         },
     });
 
@@ -33,6 +35,17 @@ const LoginForm = () => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField control={form.control} name="full_name"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Full Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder=""  {...field} />
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
                 <FormField control={form.control} name="email"
                     render={({field}) => (
                         <FormItem>
@@ -56,7 +69,7 @@ const LoginForm = () => {
                     )}
                 />
                 <Button type="submit" className="w-full font-bold">
-                    Log In
+                    Create Account
                 </Button>
             </form>
         </Form>
@@ -64,4 +77,4 @@ const LoginForm = () => {
 }
 
 
-export default LoginForm;
+export default SignUpForm;
