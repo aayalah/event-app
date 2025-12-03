@@ -3,10 +3,11 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import useLogin from "@/lib/queries/login";
 import { Form, FormField, FormLabel, FormControl, FormMessage, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
 
 const LoginSchema = z.object({
     email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"),
@@ -14,6 +15,9 @@ const LoginSchema = z.object({
 })
 
 const LoginForm = () => {
+
+    const login = useLogin();
+    const router = useRouter();
 
     const form = useForm({
         resolver: zodResolver(LoginSchema),
@@ -24,11 +28,9 @@ const LoginForm = () => {
     });
 
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        console.log(values);
+        const resp = login.mutate(values);
+        router.push("/dashboard");
     };
-
-
-
 
     return (
         <Form {...form}>
