@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Event Hub
+
+A location-based event discovery platform built with Next.js. Users can sign up, log in, and find events happening near them.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript
+- **Data Fetching:** TanStack React Query, Axios
+- **Forms:** React Hook Form, Zod
+- **UI:** Tailwind CSS, Radix UI, Lucide React
+- **Auth:** NextAuth
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx                        # Login / sign-up page
+│   ├── api/
+│   │   ├── login/route.ts              # POST /api/login
+│   │   ├── users/route.ts              # POST /api/users
+│   │   └── events/route.ts             # GET /api/events
+│   ├── components/
+│   │   ├── login_form.tsx
+│   │   └── signup_form.tsx
+│   └── (dashboard)/dashboard/
+│       ├── page.tsx                    # Event discovery dashboard
+│       └── components/
+│           ├── event_card.tsx
+│           └── filter_bar.tsx          # Location search & filters
+├── components/ui/                      # Shared UI components
+└── lib/
+    └── queries/                        # React Query hooks
+        ├── login.ts
+        ├── users.ts
+        └── events.ts
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js
+- Yarn
+
+### Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file at the project root:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+API_URL=http://localhost:3000   # URL of your backend API
+```
 
-## Learn More
+### Run the development server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+yarn dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API Routes
 
-## Deploy on Vercel
+All routes proxy to the backend defined by `API_URL`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Method | Route | Description |
+|---|---|---|
+| `POST` | `/api/login` | Authenticate a user |
+| `POST` | `/api/users` | Create a new account |
+| `GET` | `/api/events?lat=&lon=&radius=` | Fetch events by location |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Available Scripts
+
+```bash
+yarn dev      # Start development server
+yarn build    # Build for production
+yarn start    # Run production server
+yarn lint     # Run ESLint
+```
+
+## CI / Automation
+
+- **Claude PR Review** — Claude automatically reviews every pull request and posts a structured comment with a summary, issues, and verdict.
