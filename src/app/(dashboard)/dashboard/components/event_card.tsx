@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin } from "lucide-react";
+import { format, parseISO } from "date-fns";
 
 type EventCardProps = {
     title: string
@@ -20,7 +21,7 @@ const EventCard = ({title, categories, date, venue, city}: EventCardProps) => {
             <CardContent>
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    <span>{date}</span>
+                    <span>{format(parseISO(date), 'MM/dd/yyyy')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
