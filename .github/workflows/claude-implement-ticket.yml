@@ -1,0 +1,39 @@
+name: Implement Linear Ticket with Claude
+
+on:
+  repository_dispatch:
+    types: [linear-issue]
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          direct_prompt: |
+            You are implementing a feature for a Next.js + TypeScript project (events app).
+
+            Linear Ticket: ${{ github.event.client_payload.issue_id }}
+            Title: ${{ github.event.client_payload.title }}
+            Description:
+            ${{ github.event.client_payload.description }}
+            Linear URL: ${{ github.event.client_payload.url }}
+
+            Instructions:
+            1. Create a new branch named `${{ github.event.client_payload.branch }}`
+            2. Implement the feature described in the ticket
+            3. Follow existing patterns in the codebase (Next.js App Router, React Query, Axios, Tailwind CSS)
+            4. Open a pull request with:
+               - Title: "${{ github.event.client_payload.issue_id }}: ${{ github.event.client_payload.title }}"
+               - A clear description of what was implemented and any decisions made
+               - A link back to the Linear ticket: ${{ github.event.client_payload.url }}
