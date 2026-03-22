@@ -51,7 +51,7 @@ const DashboardPage = () => {
         <FilterBar onLocationSelected={onLocationSelected} onDateSelected={setDate} />
       </div>
       <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events?.map((event) =>  <EventCard key={event.id} title={event.name} categories={event.categories} date={event.date} venue={event.venueName} city={event.venueCityName} />)}
+        {events?.map((event) =>  <EventCard key={event.id} title={event.name} categories={event.categories} date={event.startDate} venue={event.venueName} city={event.venueCityName} />)}
       </div>
     </div>
   );

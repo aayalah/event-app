@@ -15,7 +15,7 @@ export type Event = {
   venueName: string;
   venueCityName: string;
   categories: string[];
-  date: string;
+  startDate: string;
 }
 
 export const useLocationSearch = (locationSearch?: LocationSearch) => {
