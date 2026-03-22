@@ -1,39 +1,67 @@
 // src/app/(dashboard)/page.tsx
 "use client";
+import { useState, useEffect } from 'react';
+import EventCard from "./components/event_card";
+import FilterBar from "./components/filter_bar";
+import { useCurrentUser } from "@/lib/queries/users";
+import { useLocationSearch } from "@/lib/queries/events";
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs"
+type LocationSelection = { label: string; lat: number; lon: number; };
+type LocationSearch = {
+    lat: number;
+    lon: number;
+    radius: number;
+};
 
 const DashboardPage = () => {
+  
+  const {data: user, isLoading} = useCurrentUser();
+  const [location, setLocation] = useState<LocationSelection | null>(null);
+
+  const { data: events, isLoading: eventsLoading } = 
+    useLocationSearch(
+      location ? {
+          lat: location.lat,
+          lon: location.lon,
+          radius: 10000,
+      }: undefined
+    );
+  
+  console.log(events);
+  console.log(eventsLoading);
+
+  const onLocationSelected = (location: LocationSelection | null) => {
+    setLocation(location);
+    if(!location){
+      return;
+    }
+    
+  }
+
+  if (isLoading || !user) {
+    return (
+      <div className="m-6">
+        <div className="p-8">Loading…</div>
+      </div>
+    );
+  }
+
+
   return (
     <div className="m-6">
       <div className="p-8 space-y-6">
         <header>
-          <h1 className="text-3xl font-semibold tracking-tight">Welcome back, Demo User! </h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Welcome back, {user.full_name}! </h1>
           <p className="text-muted-foreground">
-            Discover events and groups tailored to for you
+            Discover events and groups tailored for you
           </p>
         </header>
       </div>
-      <div className="p-8">
-        <Tabs defaultValue="events" className="w-full">
-          <TabsList className="grid max-w-[135px] grid-cols-2">
-            <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="groups">Groups</TabsTrigger>
-          </TabsList>
-          <TabsContent value="events">
-            <p>Events</p>
-          </TabsContent>
-          <TabsContent value="groups">
-            <p>Groups</p>
-          </TabsContent>
-        </Tabs>
+      <div className="p-8 space-y-6">
+        <FilterBar onLocationSelected={onLocationSelected}/>
+      </div>
+      <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {events?.map((event) =>  <EventCard key={event.id} title={event.name} categories={event.categories} date="2025-01-01" venue={event.venueName} city={event.venueCityName} />)}
       </div>
     </div>
   );
