@@ -9,10 +9,16 @@ export async function GET(req: Request) {
     const lat = params.get("lat");
     const lon = params.get("lon");
     const radius = params.get("radius");
-    console.log(`${baseUrl}?lat=${lat}&lon=${lon}`);
-    
+    const date = params.get("date");
+
+    const backendUrl = new URL(baseUrl);
+    if (lat) backendUrl.searchParams.set("lat", lat);
+    if (lon) backendUrl.searchParams.set("lon", lon);
+    if (radius) backendUrl.searchParams.set("radius", radius);
+    if (date) backendUrl.searchParams.set("date", date);
+
     try {
-        const resp = await axios.get(`${baseUrl}?lat=${lat}&lon=${lon}&radius=${radius}`);
+        const resp = await axios.get(backendUrl.toString());
         return NextResponse.json(resp.data)
     } catch (error: any) {
         return NextResponse.json(
