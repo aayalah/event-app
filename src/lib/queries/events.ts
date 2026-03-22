@@ -6,6 +6,7 @@ type LocationSearch = {
     lon: number;
     radius: number;
     date?: string;
+    category?: string;
 };
 
 
@@ -25,7 +26,7 @@ export const useLocationSearch = (locationSearch?: LocationSearch) => {
 
 
     return useQuery<Event[]>({
-        queryKey: [locationSearch?.lat, locationSearch?.lon, locationSearch?.date],
+        queryKey: [locationSearch?.lat, locationSearch?.lon, locationSearch?.date, locationSearch?.category],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: String(lat),
@@ -33,6 +34,7 @@ export const useLocationSearch = (locationSearch?: LocationSearch) => {
                 radius: String(locationSearch?.radius),
             });
             if (locationSearch?.date) params.set("date", locationSearch.date);
+            if (locationSearch?.category) params.set("category", locationSearch.category);
             const { data } = await axios.get(`/api/events?${params.toString()}`);
             return data as Event[];
         },

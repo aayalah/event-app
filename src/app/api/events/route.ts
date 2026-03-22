@@ -10,12 +10,14 @@ export async function GET(req: Request) {
     const lon = params.get("lon");
     const radius = params.get("radius");
     const date = params.get("date");
+    const category = params.get("category");
 
     const backendUrl = new URL(baseUrl);
     if (lat) backendUrl.searchParams.set("lat", lat);
     if (lon) backendUrl.searchParams.set("lon", lon);
     if (radius) backendUrl.searchParams.set("radius", radius);
     if (date) backendUrl.searchParams.set("date", date);
+    if (category) backendUrl.searchParams.set("category", category);
 
     try {
         const resp = await axios.get(backendUrl.toString());

@@ -6,23 +6,26 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Search, MapPin, CalendarIcon, X } from "lucide-react"
 import { format } from "date-fns";
+import { useCategories } from "@/lib/queries/categories";
 
 type LocationSelection = { label: string; lat: number; lon: number };
 type FilterBarProps = {
   onLocationSelected?: (loc: LocationSelection) => void;
   onDateSelected?: (date: Date | null) => void;
+  onCategorySelected?: (category: string | null) => void;
 };
 
 const NOMINATIM_URL =
     "https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1&q=";
 
-const FilterBar = ({ onLocationSelected, onDateSelected }: FilterBarProps) => {
+const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: FilterBarProps) => {
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState<LocationSelection[]>([]);
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<LocationSelection | null>(null);
     const [date, setDate] = useState<Date | null>(null);
     const [calendarOpen, setCalendarOpen] = useState(false);
+    const { data: categories } = useCategories();
 
     useEffect(() => {
         if (!query.trim()) {
@@ -152,12 +155,15 @@ const FilterBar = ({ onLocationSelected, onDateSelected }: FilterBarProps) => {
             </div>
 
             <div>
-                <Select defaultValue="all">
-                    <SelectTrigger className="w-180px">
+                <Select defaultValue="all" onValueChange={(val) => onCategorySelected?.(val === "all" ? null : val)}>
+                    <SelectTrigger className="w-[180px]">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Categories</SelectItem>
+                        {categories?.map((cat) => (
+                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </div>

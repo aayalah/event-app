@@ -14,6 +14,7 @@ const DashboardPage = () => {
   const {data: user, isLoading} = useCurrentUser();
   const [location, setLocation] = useState<LocationSelection | null>(null);
   const [date, setDate] = useState<Date | null>(null);
+  const [category, setCategory] = useState<string | null>(null);
 
   const { data: events } = useLocationSearch(
     location ? {
@@ -21,6 +22,7 @@ const DashboardPage = () => {
         lon: location.lon,
         radius: 10000,
         date: date ? format(date, 'yyyy-MM-dd') : undefined,
+        category: category ?? undefined,
     } : undefined
   );
 
@@ -48,7 +50,7 @@ const DashboardPage = () => {
         </header>
       </div>
       <div className="p-8 space-y-6">
-        <FilterBar onLocationSelected={onLocationSelected} onDateSelected={setDate} />
+        <FilterBar onLocationSelected={onLocationSelected} onDateSelected={setDate} onCategorySelected={setCategory} />
       </div>
       <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {events?.map((event) =>  <EventCard key={event.id} title={event.name} categories={event.categories} date={event.startDate} venue={event.venueName} city={event.venueCityName} />)}
