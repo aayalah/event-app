@@ -1,11 +1,11 @@
-import { useQueryClient, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios';
-import { Radius } from 'lucide-react';
 
 type LocationSearch = {
     lat: number;
     lon: number;
     radius: number;
+    date?: string;
 };
 
 
@@ -24,11 +24,15 @@ export const useLocationSearch = (locationSearch?: LocationSearch) => {
 
 
     return useQuery<Event[]>({
-        queryKey: [locationSearch?.lat, locationSearch?.lon],
+        queryKey: [locationSearch?.lat, locationSearch?.lon, locationSearch?.date],
         queryFn: async () => {
-            console.log("query");
-            const { data } = await axios.get(`/api/events?lat=${lat}&lon=${lon}&radius=${locationSearch?.radius}`);
-            
+            const params = new URLSearchParams({
+                lat: String(lat),
+                lon: String(lon),
+                radius: String(locationSearch?.radius),
+            });
+            if (locationSearch?.date) params.set("date", locationSearch.date);
+            const { data } = await axios.get(`/api/events?${params.toString()}`);
             return data as Event[];
         },
         enabled: Boolean(locationSearch),
