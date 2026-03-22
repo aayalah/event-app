@@ -21,7 +21,7 @@ const EventCard = ({title, categories, date, venue, city}: EventCardProps) => {
             <CardContent>
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    <span>{format(parseISO(date), 'MM/dd/yyyy')}</span>
+                    <span>{format(parseISO(date.slice(0, 10)), 'MM/dd/yyyy')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
