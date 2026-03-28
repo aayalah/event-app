@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios';
+import { setStoredUser } from '@/lib/userStorage';
 
 type Login = {
     email: string;
@@ -16,6 +17,7 @@ const useLogin = () => {
         onSuccess: (response) => {
             const createdUser = response.data.user;
             queryClient.setQueryData(["currentUser"], createdUser);
+            setStoredUser(createdUser);
         },
     });
     

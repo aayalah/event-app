@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import axios from 'axios';
+import { setStoredUser, getStoredUser } from '@/lib/userStorage';
 
 type User = {
     user_name: string;
@@ -18,12 +20,22 @@ const useCreateAccount = () => {
         onSuccess: (response) => {
             const createdUser = response.data;
             queryClient.setQueryData(["currentUser"], createdUser);
+            setStoredUser(createdUser);
         },
     });
     
 };
 
 export const useCurrentUser = (id?: string) => {
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        const stored = getStoredUser();
+        if (stored) {
+            queryClient.setQueryData(["currentUser"], stored);
+        }
+    }, [queryClient]);
+
     return useQuery({
         queryKey: ["currentUser"],
         queryFn: async () => {
