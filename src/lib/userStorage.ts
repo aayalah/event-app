@@ -13,7 +13,14 @@ export function getStoredUser(): unknown | null {
     if (typeof window === 'undefined') return null;
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
-    const entry: StoredUser = JSON.parse(raw);
+    let entry: StoredUser;
+    try {
+        entry = JSON.parse(raw);
+    } catch {
+        localStorage.removeItem(KEY);
+        return null;
+    }
+
     if (Date.now() > entry.expiresAt) {
         localStorage.removeItem(KEY);
         return null;
