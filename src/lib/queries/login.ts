@@ -14,7 +14,7 @@ const useLogin = () => {
             return axios.post('/api/login', login)
         },
         onSuccess: (response) => {
-            const createdUser = response.data;
+            const createdUser = response.data.user;
             queryClient.setQueryData(["currentUser"], createdUser);
         },
     });

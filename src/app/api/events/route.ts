@@ -1,4 +1,5 @@
 import { NextResponse} from 'next/server';
+import { cookies } from 'next/headers';
 import axios from "axios";
 
 const baseUrl = `${process.env.API_URL}/events`;
@@ -19,8 +20,12 @@ export async function GET(req: Request) {
     if (date) backendUrl.searchParams.set("date", date);
     if (category) backendUrl.searchParams.set("category", category);
 
+    const token = (await cookies()).get('auth_token')?.value;
+
     try {
-        const resp = await axios.get(backendUrl.toString());
+        const resp = await axios.get(backendUrl.toString(), {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         return NextResponse.json(resp.data)
     } catch (error: any) {
         return NextResponse.json(
