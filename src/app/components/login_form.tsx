@@ -28,13 +28,17 @@ const LoginForm = () => {
     });
 
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        const resp = login.mutate(values);
-        router.push("/dashboard");
+        login.mutate(values, {
+            onSuccess: () => router.push("/dashboard"),
+        });
     };
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                {login.isError && (
+                    <p className="text-sm text-destructive">Invalid email or password. Please try again.</p>
+                )}
                 <FormField control={form.control} name="email"
                     render={({field}) => (
                         <FormItem>

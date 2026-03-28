@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import axios from "axios";
 
 const url = `${process.env.API_URL}/categories`;
 
 export async function GET() {
+    const token = (await cookies()).get('auth_token')?.value;
+
     try {
-        const resp = await axios.get(url);
+        const resp = await axios.get(url, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         return NextResponse.json(resp.data);
     } catch (error: any) {
         return NextResponse.json(
