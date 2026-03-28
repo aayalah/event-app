@@ -1,6 +1,6 @@
 // src/app/(dashboard)/layout.tsx
 import { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import UserMenu from "./components/user_menu";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -10,9 +10,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         {/* Top Bar */}
         <header className="border-b bg-background p-4 flex justify-between items-center">
           <h1 className="text-xl font-medium">EventHub</h1>
-          <Button variant="outline" size="sm">
-            Du
-          </Button>
+          <UserMenu />
         </header>
 
         {/* Page Content */}
