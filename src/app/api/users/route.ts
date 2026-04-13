@@ -8,13 +8,15 @@ export async function POST(req: Request) {
     try {
         const resp = await fetch(url, {
             method: "POST",
-            body: data,
+            body: JSON.stringify(data),
         });
 
         if (!resp.ok) {
             throw new Error("Request failed");
         }
-        return await resp.json();
+
+        const respData = await resp.json();
+        return NextResponse.json(respData);
     } catch (error: any) {
         return NextResponse.json(
             { error: error.response?.data || 'Internal Server Error'},

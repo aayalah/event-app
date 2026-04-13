@@ -19,7 +19,7 @@ const GroupCard = ({title, categories, city, country}: GroupCardProps) => {
             <CardContent>
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span>{city || "Unknown"}, {country || "Unknown"}</span>
+                    <span>{city || "-"}, {country || "-"}</span>
                 </div>
             </CardContent>
         </Card>
