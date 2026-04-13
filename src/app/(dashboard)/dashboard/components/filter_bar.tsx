@@ -15,7 +15,7 @@ type FilterBarProps = {
   onDateSelected?: (date: Date | null) => void;
   onCategorySelected?: (category: string | null) => void;
   onContentTypeSelected?: (type: "events" | "groups") => void;
-  defaultContentType: string;
+  defaultContentType: "events"  | "groups";
 };
 
 const NOMINATIM_URL =
@@ -64,7 +64,7 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onC
     const [calendarOpen, setCalendarOpen] = useState(false);
     const { data: categories } = useCategories();
 
-    const [contentType, setContentType] = useState<"events" | "groups">(defaultContentType as ("events" | "groups"));
+    const [contentType, setContentType] = useState<"events" | "groups">(defaultContentType);
 
     useEffect(() => {
         if (!query.trim()) {

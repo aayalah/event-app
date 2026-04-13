@@ -6,10 +6,15 @@ const url = `${process.env.API_URL}/users`;
 export async function POST(req: Request) {
     const data = await req.json();
     try {
-        console.log(data);
-        console.log(url);
-        const resp = await axios.post(url, data);
-        return NextResponse.json(resp.data)
+        const resp = await fetch(url, {
+            method: "POST",
+            body: data,
+        });
+
+        if (!resp.ok) {
+            throw new Error("Request failed");
+        }
+        return await resp.json();
     } catch (error: any) {
         return NextResponse.json(
             { error: error.response?.data || 'Internal Server Error'},

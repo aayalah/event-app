@@ -23,10 +23,16 @@ export async function GET(req: Request) {
     const token = (await cookies()).get('auth_token')?.value;
 
     try {
-        const resp = await axios.get(backendUrl.toString(), {
+        const resp = await fetch(backendUrl.toString(), {
+            method: "GET",
             headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-        return NextResponse.json(resp.data)
+
+        if (!resp.ok) {
+            throw new Error("Request failed:")
+        }
+
+        return await resp.json();
     } catch (error: any) {
         return NextResponse.json(
             { error: error.response?.data || 'Internal Server Error'},

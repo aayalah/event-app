@@ -25,7 +25,7 @@ export const useLocationSearch = (locationSearch?: LocationSearch) => {
 
 
     return useQuery<Event[]>({
-        queryKey: ["events", locationSearch?.lat, locationSearch?.lon, locationSearch?.date, locationSearch?.category],
+        queryKey: ["events", lat, lon, locationSearch?.date, locationSearch?.category],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: String(lat),

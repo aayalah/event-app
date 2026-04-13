@@ -5,8 +5,8 @@ import { MapPin } from "lucide-react";
 type GroupCardProps = {
     title: string
     categories: string[]
-    city: string
-    country: string
+    city: string | null
+    country: string | null
 }
 
 const GroupCard = ({title, categories, city, country}: GroupCardProps) => {
@@ -19,7 +19,7 @@ const GroupCard = ({title, categories, city, country}: GroupCardProps) => {
             <CardContent>
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span>{city}, {country}</span>
+                    <span>{city || "Unknown"}, {country || "Unknown"}</span>
                 </div>
             </CardContent>
         </Card>

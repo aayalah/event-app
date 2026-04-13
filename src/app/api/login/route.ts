@@ -6,8 +6,17 @@ const url = `${process.env.API_URL}/login`;
 export async function POST(req: Request) {
     const data = await req.json();
     try {
-        const resp = await axios.post(url, data);
-        const { token, user } = resp.data;
+        const resp = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+
+        if (!resp.ok) {
+            throw new Error("Request failed");
+        }
+
+
+        const { token, user } = await resp.json();
         const response = NextResponse.json({ user });
         response.cookies.set('auth_token', token, {
             httpOnly: true,
