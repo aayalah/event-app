@@ -20,13 +20,12 @@ export type Event = {
 }
 
 export const useLocationSearch = (locationSearch?: LocationSearch) => {
-    console.log(locationSearch);
     const lat = Number(locationSearch?.lat.toFixed(6));
     const lon = Number(locationSearch?.lon.toFixed(6));
 
 
     return useQuery<Event[]>({
-        queryKey: [locationSearch?.lat, locationSearch?.lon, locationSearch?.date, locationSearch?.category],
+        queryKey: ["events", locationSearch?.lat, locationSearch?.lon, locationSearch?.date, locationSearch?.category],
         queryFn: async () => {
             const params = new URLSearchParams({
                 lat: String(lat),

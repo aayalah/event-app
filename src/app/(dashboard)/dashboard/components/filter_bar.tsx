@@ -4,21 +4,57 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Search, MapPin, CalendarIcon, X } from "lucide-react"
 import { format } from "date-fns";
 import { useCategories } from "@/lib/queries/categories";
 
-type LocationSelection = { label: string; lat: number; lon: number };
+type LocationSelection = { label: string; lat: number; lon: number, city: string | null, country: string | null };
 type FilterBarProps = {
   onLocationSelected?: (loc: LocationSelection) => void;
   onDateSelected?: (date: Date | null) => void;
   onCategorySelected?: (category: string | null) => void;
+  onContentTypeSelected?: (type: "events" | "groups") => void;
 };
 
 const NOMINATIM_URL =
     "https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1&q=";
 
-const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: FilterBarProps) => {
+
+type Place = {
+    city: string | null;
+    country: string | null;
+}
+
+const latLonToCityCountry = async (lat: number, lon: number): Promise<Place> => {
+
+    const url = new URL("https://nominatim.openstreetmap.org/reverse");
+    url.searchParams.set("format", "jsonv2");
+    url.searchParams.set("lat", String(lat));
+    url.searchParams.set("lon", String(lon));
+    url.searchParams.set("addressdetails", "1");
+
+    const res = await fetch(url.toString(), {
+        headers: {
+            Accept: "application/json",
+        },
+    });
+
+    if (!res.ok) throw new Error("Reverse geocoding failed");
+    
+    const data = await res.json();
+
+    const a = data.address ?? {};
+
+    const city = 
+        a.city ?? a.town ?? a.village ?? a.municipality ?? a.county ?? null;
+
+    const country  = a.country ?? null;
+
+    return { city, country };
+}
+
+const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onContentTypeSelected }: FilterBarProps) => {
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState<LocationSelection[]>([]);
     const [loading, setLoading] = useState(false);
@@ -26,6 +62,8 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: F
     const [date, setDate] = useState<Date | null>(null);
     const [calendarOpen, setCalendarOpen] = useState(false);
     const { data: categories } = useCategories();
+
+    const [contentType, setContentType] = useState<"events" | "groups">("events");
 
     useEffect(() => {
         if (!query.trim()) {
@@ -41,6 +79,9 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: F
                     display_name: string;
                     lat: string;
                     lon: string;
+                    city?: string;
+                    country?: string;
+                    address?: { city?: string, country?: string, town?: string, village?: string, municipality?: string, county?: string };
                 }>;
 
                 setSuggestions(
@@ -48,9 +89,13 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: F
                         label: item.display_name,
                         lat: Number(item.lat),
                         lon: Number(item.lon),
+                        city:  item.address?.city ?? item.address?.town ?? item.address?.village ?? item.address?.municipality ?? item.address?.county ?? null,
+                        country: item?.address?.country || null,
                     }))
                 );
 
+            } catch {
+                setSuggestions([]);
             } finally {
                 setLoading(false);
             }
@@ -70,13 +115,30 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: F
         if (!navigator.geolocation) return;
 
         navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                const loc: LocationSelection = {
-                    label: "Current Location",
-                    lat: pos.coords.latitude,
-                    lon: pos.coords.longitude,
-                };
-                handleSelect(loc);
+            async (pos) => {
+                try {
+                    const place = await latLonToCityCountry(pos.coords.latitude, pos.coords.longitude);
+
+                    const loc: LocationSelection = {
+                        label: "Current Location",
+                        lat: pos.coords.latitude,
+                        lon: pos.coords.longitude,
+                        city: place.city,
+                        country: place.country,
+                    };
+                    handleSelect(loc);
+
+                } catch {
+                    const loc: LocationSelection = {
+                        label: "Current Location",
+                        lat: pos.coords.latitude,
+                        lon: pos.coords.longitude,
+                        city: null,
+                        country: null,
+                    };
+                    handleSelect(loc);
+                }
+
             },
             (err) => {
                 console.warn("Geolocation error:", err);
@@ -96,8 +158,26 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected }: F
         onDateSelected?.(null);
     };
 
+    const handleContentTypeChange = (value: string) => {
+        if (!value) return;
+        const next = value as "events" | "groups";
+        setContentType(next);
+        onContentTypeSelected?.(next);
+    }
+
     return (
         <div className="flex flex-row gap-4 items-start">
+            <div>
+                <ToggleGroup
+                    type="single"
+                    value={contentType}
+                    onValueChange={handleContentTypeChange}
+                    className="justify-start"
+                >
+                    <ToggleGroupItem value="events" aria-label="Show events">Events</ToggleGroupItem>
+                    <ToggleGroupItem value="groups" aria-label="Show groups">Groups</ToggleGroupItem>
+                </ToggleGroup>
+            </div>
             <div className="space-y-2">
                 <div className="flex gap-2 items-center">
                     <div className="relative w-full max-w-sm">
