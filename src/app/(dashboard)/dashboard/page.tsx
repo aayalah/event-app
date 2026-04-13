@@ -9,7 +9,7 @@ import { useCurrentUser } from "@/lib/queries/users";
 import { useLocationSearch } from "@/lib/queries/events";
 import { useLocationSearch as useGroupLocationSearch } from "@/lib/queries/groups";
 
-type LocationSelection = { label: string; lat: number; lon: number; city: string | null, country: string | null };
+type LocationSelection = { label: string; lat: number; lon: number; city: string | null; country: string | null };
 
 const DashboardPage = () => {
 
@@ -61,11 +61,11 @@ const DashboardPage = () => {
         </header>
       </div>
       <div className="p-8 space-y-6">
-        <FilterBar onLocationSelected={onLocationSelected} onDateSelected={setDate} onCategorySelected={setCategory} onContentTypeSelected={setContentType}/>
+        <FilterBar onLocationSelected={onLocationSelected} onDateSelected={setDate} onCategorySelected={setCategory} onContentTypeSelected={setContentType} defaultContentType={contentType}/>
       </div>
       <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {contentType === "events" && events?.map((event) =>  <EventCard key={event.id} title={event.name} categories={event.categories} date={event.startDate} venue={event.venueName} city={event.venueCityName} />)}
-        {contentType === "groups" && groups?.map((group) =>  <GroupCard key={group.id} title={group.name} categories={group.categories} city={group.city} country={group.country} />)}
+        {contentType === "groups" && groups?.map((group) => group.city && group.country &&  <GroupCard key={group.id} title={group.name} categories={group.categories} city={group.city} country={group.country} />)}
       </div>
     </div>
   );

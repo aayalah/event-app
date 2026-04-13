@@ -15,6 +15,7 @@ type FilterBarProps = {
   onDateSelected?: (date: Date | null) => void;
   onCategorySelected?: (category: string | null) => void;
   onContentTypeSelected?: (type: "events" | "groups") => void;
+  defaultContentType: string;
 };
 
 const NOMINATIM_URL =
@@ -54,7 +55,7 @@ const latLonToCityCountry = async (lat: number, lon: number): Promise<Place> => 
     return { city, country };
 }
 
-const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onContentTypeSelected }: FilterBarProps) => {
+const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onContentTypeSelected, defaultContentType }: FilterBarProps) => {
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState<LocationSelection[]>([]);
     const [loading, setLoading] = useState(false);
@@ -63,7 +64,7 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onC
     const [calendarOpen, setCalendarOpen] = useState(false);
     const { data: categories } = useCategories();
 
-    const [contentType, setContentType] = useState<"events" | "groups">("events");
+    const [contentType, setContentType] = useState<"events" | "groups">(defaultContentType as ("events" | "groups"));
 
     useEffect(() => {
         if (!query.trim()) {

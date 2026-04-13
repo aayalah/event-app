@@ -28,7 +28,7 @@ export const useLocationSearch = (locationSearch?: LocationSearch) => {
             const { data } = await axios.get(`/api/groups?${params.toString()}`);
             return data as Group[];
         },
-        enabled: Boolean(locationSearch),
+        enabled: Boolean(locationSearch?.city && locationSearch?.country),
     });
 }
 
