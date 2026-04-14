@@ -1,6 +1,5 @@
 import { NextResponse} from 'next/server';
 import { cookies } from 'next/headers';
-import axios from "axios";
 
 const baseUrl = `${process.env.API_URL}/groups`;
 
@@ -32,7 +31,7 @@ export async function GET(req: Request) {
         return NextResponse.json(data);
     } catch (error: any) {
         return NextResponse.json(
-            { error: error.response?.data || 'Internal Server Error'},
+            { error: 'Internal Server Error'},
             { status: error.response?.status || 500 }
         );
     }

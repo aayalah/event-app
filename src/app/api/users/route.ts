@@ -1,5 +1,4 @@
 import { NextResponse} from 'next/server';
-import axios from "axios";
 
 const url = `${process.env.API_URL}/users`;
 
@@ -22,8 +21,8 @@ export async function POST(req: Request) {
         return NextResponse.json(respData);
     } catch (error: any) {
         return NextResponse.json(
-            { error: error.response?.data || 'Internal Server Error'},
-            { status: error.response?.status || 500 }
+            { error: 'Internal Server Error'},
+            { status: 500 }
         );
     }
 }
