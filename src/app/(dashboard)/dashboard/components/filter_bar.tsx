@@ -50,7 +50,7 @@ const latLonToCityCountry = async (lat: number, lon: number): Promise<Place> => 
     const city = 
         a.city ?? a.town ?? a.village ?? a.municipality ?? a.county ?? null;
 
-    const country  = a.country ?? null;
+    const country  = a.country_code?.toUpperCase() ?? null;
 
     return { city, country };
 }
@@ -80,7 +80,7 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onC
                     lon: string;
                     city?: string;
                     country?: string;
-                    address?: { city?: string, country?: string, town?: string, village?: string, municipality?: string, county?: string };
+                    address?: { city?: string, country?: string, town?: string, village?: string, municipality?: string, county?: string, country_code?: string };
                 }>;
 
                 setSuggestions(
@@ -89,7 +89,7 @@ const FilterBar = ({ onLocationSelected, onDateSelected, onCategorySelected, onC
                         lat: Number(item.lat),
                         lon: Number(item.lon),
                         city:  item.address?.city ?? item.address?.town ?? item.address?.village ?? item.address?.municipality ?? item.address?.county ?? null,
-                        country: item?.address?.country || null,
+                        country: item?.address?.country_code?.toUpperCase() || null,
                     }))
                 );
 
