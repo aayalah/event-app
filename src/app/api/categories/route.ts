@@ -13,7 +13,9 @@ export async function GET() {
         });
         
         if (!resp.ok) {
-            throw new Error("Request failed:")
+            throw {
+                status: resp.status,
+            }
         }
 
         const data = await resp.json();

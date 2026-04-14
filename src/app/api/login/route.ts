@@ -15,7 +15,9 @@ export async function POST(req: Request) {
         });
 
         if (!resp.ok) {
-            throw new Error("Request failed");
+            throw {
+                status: resp.status,
+            }
         }
 
         const { token, user } = await resp.json();

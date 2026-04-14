@@ -24,7 +24,9 @@ export async function GET(req: Request) {
         });
         
         if (!resp.ok) {
-            throw new Error("Request failed:")
+            throw {
+                status: resp.status,
+            }
         }
 
         const data = await resp.json();
@@ -32,7 +34,7 @@ export async function GET(req: Request) {
     } catch (error: any) {
         return NextResponse.json(
             { error: 'Internal Server Error'},
-            { status: error.response?.status || 500 }
+            { status: error.status || 500 }
         );
     }
 }

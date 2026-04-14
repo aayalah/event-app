@@ -14,7 +14,9 @@ export async function POST(req: Request) {
         });
 
         if (!resp.ok) {
-            throw new Error("Request failed");
+            throw {
+                status: resp.status,
+            }
         }
 
         const respData = await resp.json();
@@ -22,7 +24,7 @@ export async function POST(req: Request) {
     } catch (error: any) {
         return NextResponse.json(
             { error: 'Internal Server Error'},
-            { status: 500 }
+            { status: error.status || 500 }
         );
     }
 }
