@@ -5,16 +5,19 @@ const url = `${process.env.API_URL}/login`;
 
 export async function POST(req: Request) {
     const data = await req.json();
+
     try {
         const resp = await fetch(url, {
             method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(data),
         });
 
         if (!resp.ok) {
             throw new Error("Request failed");
         }
-
 
         const { token, user } = await resp.json();
         const response = NextResponse.json({ user });
@@ -27,6 +30,7 @@ export async function POST(req: Request) {
         });
         return response;
     } catch (error: any) {
+        // console.log(error);
         return NextResponse.json(
             { error: error.response?.data || 'Internal Server Error'},
             { status: error.response?.status || 500 }
